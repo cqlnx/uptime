@@ -1,0 +1,9 @@
+{
+  "rewrites": [
+    { "source": "/", "destination": "/uptime.html" },
+    {
+      "source": "/api/:path*",
+      "destination": "https://raw.githubusercontent.com/cqlnx/uptime/data/api/:path*"
+    }
+  ]
+}
