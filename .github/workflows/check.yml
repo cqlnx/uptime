@@ -1,0 +1,56 @@
+name: Uptime check
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write   
+  
+concurrency:
+  group: uptime-check
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Load previous state from the data branch
+        run: |
+          if git ls-remote --exit-code --heads origin data >/dev/null 2>&1; then
+            git clone --depth 1 --branch data \
+              "https://github.com/${{ github.repository }}.git" data
+            rm -rf data/.git
+          else
+            mkdir data
+          fi
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Run checks
+        env:
+          DATA_DIR: ${{ github.workspace }}/data
+          FAILURE_THRESHOLD: "2"
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          GENERIC_WEBHOOK_URL: ${{ secrets.GENERIC_WEBHOOK_URL }}
+        run: python run_once.py
+        
+      - name: Publish data branch
+        run: |
+          cd data
+          git init -q -b data
+          git config user.name "uptime-bot"
+          git config user.email "uptime-bot@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Update ${{ github.run_id }}"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" data
