@@ -1,0 +1,37 @@
+{
+  "targets": [
+    {
+      "id": "main",
+      "name": "Main Site",
+      "url": "https://minescan.xyz/",
+      "method": "GET",
+      "timeout_seconds": 8,
+      "expected_status": [200, 301, 302, 308]
+    },
+    {
+      "id": "api",
+      "name": "API",
+      "url": "https://data.minescan.xyz/health",
+      "method": "GET",
+      "timeout_seconds": 8,
+      "expected_status": [200, 301, 302, 308]
+    },
+    {
+      "id": "data",
+      "name": "Data API",
+      "url": "https://data.minescan.xyz/servers",
+      "method": "GET",
+      "timeout_seconds": 8,
+      "expected_status": [200, 301, 302, 308]
+    },
+    {
+      "id": "optout",
+      "name": "Opt-Out Portal",
+      "url": "http://optout.minescan.xyz/",
+      "method": "GET",
+      "timeout_seconds": 8,
+      "expected_status": [200, 301, 302, 308]
+    }
+  ],
+  "history_retention": 2000
+}
