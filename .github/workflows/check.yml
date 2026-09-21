@@ -1,13 +1,11 @@
 name: Uptime check
 
 on:
-  schedule:
-    - cron: "*/5 * * * *"
   workflow_dispatch:
 
 permissions:
-  contents: write   
-  
+  contents: write
+
 concurrency:
   group: uptime-check
   cancel-in-progress: false
@@ -44,7 +42,7 @@ jobs:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
           GENERIC_WEBHOOK_URL: ${{ secrets.GENERIC_WEBHOOK_URL }}
         run: python run_once.py
-        
+
       - name: Publish data branch
         run: |
           cd data
